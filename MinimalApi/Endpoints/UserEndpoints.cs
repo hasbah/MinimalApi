@@ -37,6 +37,7 @@ namespace MinimalApi.Endpoints
                 .Accepts<ForgotPasswordRequestDTO>("application/json")
                 .Produces<APIResponse>(200)
                 .Produces<APIResponse>(400)
+                .AddEndpointFilter<BasicValidator<ForgotPasswordRequestDTO>>()
                 .AllowAnonymous(); 
 
             app.MapPost("/api/auth/reset-password", ResetPassword)
@@ -44,6 +45,7 @@ namespace MinimalApi.Endpoints
                 .Accepts<ResetPasswordRequestDTO>("application/json")
                 .Produces<APIResponse>(200)
                 .Produces<APIResponse>(400)
+                .AddEndpointFilter<BasicValidator<ResetPasswordRequestDTO>>()
                 .AllowAnonymous();
         } 
 
