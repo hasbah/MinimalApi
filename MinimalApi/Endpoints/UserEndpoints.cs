@@ -47,18 +47,18 @@ namespace MinimalApi.Endpoints
                 .AllowAnonymous();
         } 
 
-        private async static Task<IResult> Login(IUserService _userRepository, [FromBody] LoginRequestDTO model)
+        private async static Task<IResult> Login(IUserService _userService, [FromBody] LoginRequestDTO model)
         {
-            var result = await _userRepository.Login(model);
+            var result = await _userService.Login(model);
             if (!result.IsSuccess)
                 return Results.BadRequest(result);
 
             return Results.Ok(result);
         }
 
-        private async static Task<IResult> Register(IUserService _userRepository, [FromBody] RegistrationRequestDTO model)
+        private async static Task<IResult> Register(IUserService _userService, [FromBody] RegistrationRequestDTO model)
         { 
-            var result = await _userRepository.Register(model);
+            var result = await _userService.Register(model);
 
             if (!result.IsSuccess) 
                 return Results.BadRequest(result);
@@ -67,9 +67,9 @@ namespace MinimalApi.Endpoints
 
         }
 
-        private async static Task<IResult> Verify(IUserService _userRepository, string id, string code)
+        private async static Task<IResult> Verify(IUserService _userService, string id, string code)
         {
-            var result = await _userRepository.Verify(id, code);
+            var result = await _userService.Verify(id, code);
 
             if (!result.IsSuccess)
                 return Results.BadRequest(result);
@@ -78,9 +78,9 @@ namespace MinimalApi.Endpoints
 
         }
 
-        private async static Task<IResult> ForgotPassword(IUserService _userRepository, ForgotPasswordRequestDTO forgotPasswordRequestDTO)
+        private async static Task<IResult> ForgotPassword(IUserService _userService, ForgotPasswordRequestDTO forgotPasswordRequestDTO)
         {
-            var result = await _userRepository.ForgotPassword(forgotPasswordRequestDTO);
+            var result = await _userService.ForgotPassword(forgotPasswordRequestDTO);
 
             if (!result.IsSuccess)
                 return Results.BadRequest(result);
@@ -88,9 +88,9 @@ namespace MinimalApi.Endpoints
             return Results.Ok(result); 
         }
           
-        private async static Task<IResult> ResetPassword(IUserService _userRepository, ResetPasswordRequestDTO resetPasswordRequestDTO)
+        private async static Task<IResult> ResetPassword(IUserService _userService, ResetPasswordRequestDTO resetPasswordRequestDTO)
         {
-            var result = await _userRepository.ResetPassword(resetPasswordRequestDTO);
+            var result = await _userService.ResetPassword(resetPasswordRequestDTO);
 
             if (!result.IsSuccess)
                 return Results.BadRequest(result);
