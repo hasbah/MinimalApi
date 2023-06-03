@@ -5,15 +5,21 @@ using MinimalApi.Data;
 using MinimalApi.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
+using HealthChecks.UI.Client;
 using MinimalApi.Core; 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens; 
 using MinimalApi.Endpoints;
 using MinimalApi.Services.Interfaces;
 using MinimalApi.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args); 
  
+//heath check
+builder.Services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? "");
+
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders()
@@ -70,10 +76,8 @@ builder.Services
         x.SaveToken = true;
         x.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuerSigningKey = true,
-#nullable disable
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("ApiSettings:Secret"))),
-#nullable enable
+            ValidateIssuerSigningKey = true, 
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("ApiSettings:Secret") ?? "SECRET_KEY")), 
             ValidateIssuer = false,
             ValidateAudience = false
 
@@ -90,11 +94,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
+app.MapHealthChecks("/health", new HealthCheckOptions()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+}) ; 
+
 app.UseAuthentication();
 app.UseAuthorization();  
 
 app.ConfigureUserEndpoints();
-app.UseHttpsRedirection();
  
  
 app.Run();
