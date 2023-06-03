@@ -22,8 +22,8 @@ namespace MinimalApi.Services
         private readonly UserManager<ApplicationUser> _userManager; 
         private readonly ILogger<UserService> _logger;
         private readonly IEmailService _emailService;
-        private string secretKey;
-        private string url;
+        private readonly string secretKey;
+        private readonly string url;
 
 
         public UserService(ApplicationDbContext db, 
@@ -39,8 +39,8 @@ namespace MinimalApi.Services
             _configuration = configuration;
             _userManager = userManager; 
             _logger = logger;
-            secretKey = _configuration.GetValue<string>("ApiSettings:Secret");
-            url = _configuration.GetValue<string>("ApiSettings:Url");
+            secretKey = _configuration.GetValue<string>("ApiSettings:Secret") ?? "SECRET_KEY";
+            url = _configuration.GetValue<string>("ApiSettings:Url") ?? "";
         } 
         public async Task<APIResponse> Register(RegistrationRequestDTO registerationRequestDTO)
         {
@@ -78,14 +78,14 @@ namespace MinimalApi.Services
 
             if (id is null)
             {
-                _logger.LogInformation($"UserId '{id}' is null");
+                _logger.LogInformation($"UserId is null");
 
                 response.ErrorMessages.Add("Invalid token");
                 return response;
             }
             if (code is null)
             {
-                _logger.LogInformation($"Code '{code}' is null");
+                _logger.LogInformation($"Code is null");
 
                 response.ErrorMessages.Add("Invalid token");
                 return response;

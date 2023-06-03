@@ -12,24 +12,22 @@ namespace MinimalApi.Services
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<EmailService> _logger;
-        private string emailSenderLogin;
-        private string emailSenderSmtpServer;
-        private int emailSenderPort;
-        private bool emailSenderEnableSsl;
-        private string emailSenderPassword;
+        private readonly string emailSenderLogin;
+        private readonly string emailSenderSmtpServer;
+        private readonly int emailSenderPort;
+        private readonly bool emailSenderEnableSsl;
+        private readonly string emailSenderPassword;
 
         public EmailService(IConfiguration configuration,
             ILogger<EmailService> logger)
         {
             _configuration = configuration;
-            _logger = logger;
-#nullable disable
-            emailSenderLogin        = _configuration.GetValue<string>("EmailSenderLogin");
-            emailSenderSmtpServer   = _configuration.GetValue<string>("EmailSenderSmtpServer");
+            _logger = logger; 
+            emailSenderLogin        = _configuration.GetValue<string>("EmailSenderLogin") ?? "";
+            emailSenderSmtpServer   = _configuration.GetValue<string>("EmailSenderSmtpServer") ?? "";
             emailSenderPort         = _configuration.GetValue<int>("EmailSenderPort");
             emailSenderEnableSsl    = _configuration.GetValue<bool>("EmailSenderEnableSsl");
-            emailSenderPassword     = _configuration.GetValue<string>("EmailSenderPassword");
-#nullable enable
+            emailSenderPassword     = _configuration.GetValue<string>("EmailSenderPassword") ?? ""; 
         }
 
         public async Task<EmailResult> SendEmailAsync(List<string> recipients, string subject, string htmlMessage, CancellationToken cancellationToken = default)
